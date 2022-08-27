@@ -40,3 +40,35 @@ And installed with:
 cd ./helm
 helm install peloton-to-garmin ./peloton-to-garmin --values override.values.yaml
 ```
+
+## Docker Builds
+
+The image for each flavor can be built by providing its target as an argument to the Docker build command
+
+### Console
+
+```
+DOCKER_BUILDKIT=1 docker build -f docker/Dockerfile . --build-arg VERSION=<version number> -t peloton-garmin --target final_console
+```
+
+### API
+
+```
+DOCKER_BUILDKIT=1 docker build -f docker/Dockerfile . --build-arg VERSION=<version number>  -t peloton-garmin --target final_api
+```
+
+### Web
+
+```
+DOCKER_BUILDKIT=1 docker build -f docker/Dockerfile . --build-arg VERSION=<version number>  -t peloton-garmin --target final_web
+
+## Contributors
+
+Special thanks to all the [contributors](https://github.com/philosowaffle/peloton-to-garmin/graphs/contributors) who have helped improve this project!
+
+## Warnings
+
+⚠️ WARNING!!! Your username and password for Peloton and Garmin Connect are stored in clear text, WHICH IS NOT SECURE. If you have concerns about storing your credentials in an unsecure file, do not use this option.
+
+## Donate
+<a href="https://www.buymeacoffee.com/philosowaffle" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/black_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
