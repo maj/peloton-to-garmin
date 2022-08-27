@@ -192,6 +192,7 @@ namespace Conversion
 					return (float)value * _metersPerMile;
 				case DistanceUnit.Feet:
 					return (float)value * 0.3048f;
+				case DistanceUnit.Meters:
 				default:
 					return (float)value;
 			}
@@ -495,7 +496,10 @@ namespace Conversion
 			switch (unit?.ToLower())
 			{
 				case "km":
+				case "kph":
 					return DistanceUnit.Kilometers;
+				case "m":
+					return DistanceUnit.Meters;
 				case "mi":
 				case "mph":
 					return DistanceUnit.Miles;
@@ -518,12 +522,12 @@ namespace Conversion
 					ftp = (ushort)Math.Round(ftp.GetValueOrDefault() * .95);
 			} 
 			
-			if (ftp is null || ftp <= 0)
+			if ((ftp is null || ftp <= 0) && userData is object)
 			{
-				if (userData?.Cycling_Ftp_Source == CyclingFtpSource.Ftp_Manual_Source)
+				if (userData.Cycling_Ftp_Source == CyclingFtpSource.Ftp_Manual_Source)
 					ftp = (ushort)Math.Round(userData.Cycling_Ftp * .95);
 
-				if (userData?.Cycling_Ftp_Source == CyclingFtpSource.Ftp_Workout_Source)
+				if (userData.Cycling_Ftp_Source == CyclingFtpSource.Ftp_Workout_Source)
 					ftp = userData.Cycling_Workout_Ftp;
 			}
 
