@@ -7,25 +7,61 @@
 
 #### _#PelotonToGarmin_
 
-Convert workout data from Peloton into a format that can be uploaded to Garmin.
+This is a fork of https://github.com/philosowaffle/peloton-to-garmin that adds advanced configuration options that are difficult to generally support
 
-* Fetch latest workouts from Peloton
-* Convert Peloton workout to a variety of formats
-* Upload TCX or FIT workout to Garmin
-* Avoid duplicates in Garmin
-* Backup your downloaded data and converted files
-* Earn Badges and credit for Garmin Challenges
+# Kubernetes
 
-Head on over to the [Wiki](https://philosowaffle.github.io/peloton-to-garmin) to get started!
+It is also possible to run P2G in Kubernets via [Helm](https://helm.sh/). By default P2G is conmfigured with the default values from the [configuration.local.json file](helm/peloton-to-garmin/values.yaml).
 
-![Example Cycling Workout](/images/example_cycle.png?raw=true "Example Cycling Workout")
+In addition it is installed as a [Kubernetes Cronjob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) so it will run automatically on the scheduled interval (i.e. by default every 6 hours)
 
-## Supported Platforms
+To provide your own values create an overrides_value.yaml file and provide it when installing the chart.
 
-* Windows
-* Mac
-* Linux
-* Docker
+For example an overrides-value.yaml file might look like:
+```
+app:
+  enablePolling: false
+peloton:
+  email: "fill_me_in@domain.com"
+  password: "fill_me_in"
+  numWorkoutsToDownload: 5
+  excludeWorkoutTypes: []
+garmin:
+  email: "fill_me_in@domain.com"
+  password: "fill_me_in"
+  upload: true
+config:
+  # Every day at 3pm
+  schedule: "0 15 * * *"
+```
+
+And installed with:
+```
+cd ./helm
+helm install peloton-to-garmin ./peloton-to-garmin --values override.values.yaml
+```
+
+## Docker Builds
+
+The image for each flavor can be built by providing its target as an argument to the Docker build command
+
+### Console
+
+```
+DOCKER_BUILDKIT=1 docker build -f docker/Dockerfile . --build-arg VERSION=<version number> -t peloton-garmin --target final_console
+```
+
+### API
+
+```
+DOCKER_BUILDKIT=1 docker build -f docker/Dockerfile . --build-arg VERSION=<version number>  -t peloton-garmin --target final_api
+```
+
+### Web
+
+```
+DOCKER_BUILDKIT=1 docker build -f docker/Dockerfile . --build-arg VERSION=<version number>  -t peloton-garmin --target final_web
+```
 
 ## Contributors
 
