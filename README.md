@@ -61,6 +61,7 @@ DOCKER_BUILDKIT=1 docker build -f docker/Dockerfile . --build-arg VERSION=<versi
 
 ```
 DOCKER_BUILDKIT=1 docker build -f docker/Dockerfile . --build-arg VERSION=<version number>  -t peloton-garmin --target final_web
+```
 
 ## Contributors
 
