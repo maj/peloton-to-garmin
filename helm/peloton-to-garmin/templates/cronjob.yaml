@@ -13,10 +13,31 @@ spec:
           labels:
             sidecar.istio.io/inject: "false"
         spec:
+          serviceAccountName: peloton-to-garmin-sa
           containers:
             - name: peloton-to-garmin
               image: {{ .Values.config.image | default "philosowaffle/peloton-to-garmin:stable" }}
+              env:
+                - name: TZ
+                  value: America/Los Angeles
+              {{- if .Values.config.vaultEnabled }}
+                - name: P2G_PELOTON__PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: peloton-to-garmin
+                      key: peloton-password
+                - name: P2G_GARMIN__PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: peloton-to-garmin
+                      key: garmin-password
+              {{- end }}
               volumeMounts:
+                {{- if .Values.config.vaultEnabled }}
+                - name: secrets-store-inline
+                  mountPath: "/mnt/secrets-store"
+                  readOnly: true
+                {{- end }}
                 - name: configmap
                   mountPath: "/app/configuration.local.json"
                   subPath: "configuration.local.json"
@@ -24,4 +45,12 @@ spec:
             - name: configmap
               configMap:
                 name: peloton-garmin-configmap
+            {{- if .Values.config.vaultEnabled }}
+            - name: secrets-store-inline
+              csi:
+                driver: secrets-store.csi.k8s.io
+                readOnly: true
+                volumeAttributes:
+                  secretProviderClass: "vault-peloton-to-garmin"
+            {{- end }}
           restartPolicy: OnFailure

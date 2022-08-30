@@ -15,12 +15,12 @@ format:
   deviceInfoPath: "./deviceInfo.xml"
 peloton:
   email:
-  password:
+  password: ""
   numWorkoutsToDownload: 1
   excludeWorkoutTypes: []
 garmin:
   email:
-  password:
+  password: ""
   upload: false
   formatToUpload: "fit"
   uploadStrategy: 2

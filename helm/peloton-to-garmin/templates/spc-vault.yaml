@@ -1,0 +1,24 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: vault-peloton-to-garmin
+spec:
+  provider: vault
+  secretObjects:
+    - data:
+        - key: peloton-password
+          objectName: peloton-password
+        - key: garmin-password
+          objectName: garmin-password
+      secretName: peloton-to-garmin
+      type: Opaque
+  parameters:
+    vaultAddress: "http://vault.default:8200"
+    roleName: "peloton-to-garmin"
+    objects: |
+      - objectName: "peloton-password"
+        secretPath: "secret/data/peloton-to-garmin"
+        secretKey: "peloton-password"
+      - objectName: "garmin-password"
+        secretPath: "secret/data/peloton-to-garmin"
+        secretKey: "garmin-password"
