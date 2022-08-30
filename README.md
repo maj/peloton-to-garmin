@@ -49,10 +49,7 @@ There is a good tutorial of how to [set this up](https://learn.hashicorp.com/tut
 
 But in the meantime the items that are needed are:
 1. The CSI secret store driver and Vault provider installed
-1. Both Peloton and Garmin passwords in Vault
-```
-vault kv put secret/peloton-to-garmin peloton-password="<enter peloton password>" garmin-password="<enter garmin password>"
-```
+1. Both Peloton and Garmin passwords in Vault ```vault kv put secret/peloton-to-garmin peloton-password="<enter peloton password>" garmin-password="<enter garmin password>"```
 1. A policy, role and service account that allows the application to read the secret
 ```
 vault policy write internal-app - <<EOF
