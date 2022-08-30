@@ -48,23 +48,31 @@ Peloton and Garmin passwords can be stored in [Vault](https://www.hashicorp.com/
 There is a good tutorial of how to [set this up](https://learn.hashicorp.com/tutorials/vault/kubernetes-secret-store-driver?in=vault/kubernetes) and I'm planning to script it.
 
 But in the meantime the items that are needed are:
+1. Enabled Vault support in the overrides.value.yaml file
+    ```
+    config:
+      vaultEnabled: true
+    ```
 1. The CSI secret store driver and Vault provider installed
-1. Both Peloton and Garmin passwords in Vault ```vault kv put secret/peloton-to-garmin peloton-password="<enter peloton password>" garmin-password="<enter garmin password>"```
+1. Both Peloton and Garmin passwords in Vault 
+    ```
+    vault kv put secret/peloton-to-garmin peloton-password="<enter peloton password>" garmin-password="<enter garmin password>"
+    ```
 1. A policy, role and service account that allows the application to read the secret
-```
-vault policy write internal-app - <<EOF
-path "secret/data/peloton-to-garmin" {
-  capabilities = ["read"]
-}
-EOF
-vault write auth/kubernetes/role/peloton-to-garmin \
-    bound_service_account_names=peloton-to-garmin-sa \
-    bound_service_account_namespaces=default \
-    policies=internal-app \
-    ttl=20m
+    ```
+    vault policy write internal-app - <<EOF
+    path "secret/data/peloton-to-garmin" {
+      capabilities = ["read"]
+    }
+    EOF
+    vault write auth/kubernetes/role/peloton-to-garmin \
+        bound_service_account_names=peloton-to-garmin-sa \
+        bound_service_account_namespaces=default \
+        policies=internal-app \
+        ttl=20m
 
-kubectl create serviceaccount peloton-to-garmin-sa
-```
+    kubectl create serviceaccount peloton-to-garmin-sa
+    ```
 
 ## Docker Builds
 
