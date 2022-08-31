@@ -41,6 +41,39 @@ cd ./helm
 helm install peloton-to-garmin ./peloton-to-garmin --values override.values.yaml
 ```
 
+# Vault support
+
+Peloton and Garmin passwords can be stored in [Vault](https://www.hashicorp.com/products/vault) and injected into the Cronjob pob via the [Vault CSI Provider](https://www.vaultproject.io/docs/platform/k8s/csi)
+
+There is a good tutorial of how to [set this up](https://learn.hashicorp.com/tutorials/vault/kubernetes-secret-store-driver?in=vault/kubernetes) and I'm planning to script it.
+
+But in the meantime the items that are needed are:
+1. Enabled Vault support in the overrides.value.yaml file
+    ```
+    config:
+      vaultEnabled: true
+    ```
+1. The CSI secret store driver and Vault provider installed
+1. Both Peloton and Garmin passwords in Vault 
+    ```
+    vault kv put secret/peloton-to-garmin peloton-password="<enter peloton password>" garmin-password="<enter garmin password>"
+    ```
+1. A policy, role and service account that allows the application to read the secret
+    ```
+    vault policy write internal-app - <<EOF
+    path "secret/data/peloton-to-garmin" {
+      capabilities = ["read"]
+    }
+    EOF
+    vault write auth/kubernetes/role/peloton-to-garmin \
+        bound_service_account_names=peloton-to-garmin-sa \
+        bound_service_account_namespaces=default \
+        policies=internal-app \
+        ttl=20m
+
+    kubectl create serviceaccount peloton-to-garmin-sa
+    ```
+
 ## Docker Builds
 
 The image for each flavor can be built by providing its target as an argument to the Docker build command
