@@ -19,7 +19,7 @@ spec:
               image: {{ .Values.config.image | default "philosowaffle/peloton-to-garmin:stable" }}
               env:
                 - name: TZ
-                  value: America/Los Angeles
+                  value: America/Los_Angeles
               {{- if .Values.config.vaultEnabled }}
                 - name: P2G_PELOTON__PASSWORD
                   valueFrom:
